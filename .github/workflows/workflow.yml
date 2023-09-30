@@ -6,38 +6,35 @@ on:
       - main
 
 jobs:
-  lint:
-    name: ESLint
+  backend:
+    name: Backend Actions
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Switch to Frontend
-        run: cd front-test
-      - name: Install dependencies using Yarn
-        run: yarn install
-      - name: Run ESLint with Yarn
-        run: yarn run lint
 
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        action: [lint, build, unit-test]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '18'
+
       - name: Install Yarn
         run: npm install -g yarn
+
       - name: Install dependencies using Yarn
         run: yarn install
-      - name: Run tests with Yarn
-        run: yarn test
+
+      - name: Run Action
+        run: |
+          if [ ${{ matrix.action }} = "lint" ]; then
+            yarn run lint
+          elif [ ${{ matrix.action }} = "build" ]; then
+            npm run build
+          elif [ ${{ matrix.action }} = "unit-test" ]; then
+            yarn test  # Replace with your unit test command
+          fi
