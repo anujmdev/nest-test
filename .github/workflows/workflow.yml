@@ -18,6 +18,8 @@ jobs:
           node-version: '18'
       - name: Install Yarn
         run: npm install -g yarn
+      - name: Switch to Frontend
+        run: cd front-test
       - name: Install dependencies using Yarn
         run: yarn install
       - name: Run ESLint with Yarn
